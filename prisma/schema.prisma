@@ -14,20 +14,37 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  posts     Post[]
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  password     String
+  createdAt    DateTime @default(now())
+  posts        Post[]
+  refreshToken String?
 }
 
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
-  tags      String[]
   createdAt DateTime @default(now())
   authorId  Int
   author    User     @relation(fields: [authorId], references: [id])
+  tags      PostTag[]  
 }
+
+model Tag {
+  id    Int      @id @default(autoincrement())
+  name  String   @unique
+  posts PostTag[]  
+}
+
+model PostTag {
+  post   Post @relation(fields: [postId], references: [id])
+  postId Int
+  tag    Tag  @relation(fields: [tagId], references: [id])
+  tagId  Int
+
+  @@id([postId, tagId])  
+}
+
